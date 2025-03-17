@@ -6,6 +6,19 @@ import pandas as pd
 import json
 import xml.etree.ElementTree as ET
 
+def get_page_count(json_data):
+    return len(json_data.get("pages", []))
+
+def fetch_document_data(document_id, api_key):
+    url = f"https://cli.agiledd.ai/api/documents/{document_id}"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error: {response.status_code}")
+        return None
+
 def download_text(document_id, page_number, api_key):
     url = f"https://cli.agiledd.ai/api/documents/{document_id}/pages/{page_number}/text"
     headers = {"Authorization": f"Bearer {api_key}"}
@@ -64,10 +77,11 @@ def main():
 
     api_key = st.text_input("Enter API key:")
     document_id = st.text_input("Enter Document ID:")
-    page_number = st.number_input("Enter Page Number:", min_value=1)
+    document_data = fetch_document_data(document_id, api_key)
+    num_pages = get_page_count(document_data)
 
     if st.button("Process Document"):
-        text = download_text(document_id, page_number, api_key)
+        text = download_text(document_id, num_pages, api_key)
         if text:
             zip_file = download_csv_zip(document_id, api_key)
             if zip_file:
