@@ -76,9 +76,10 @@ def main():
     st.title("Document Processing App")
 
     api_key = st.text_input("Enter API key:")
-    document_id = st.text_input("Enter Document ID:")
-    document_data = fetch_document_data(document_id, api_key)
-    num_pages = get_page_count(document_data)
+    document_id = st.text_input("Enter Document ID:", value=500)
+    if api_key:
+        document_data = fetch_document_data(document_id, api_key)
+        num_pages = get_page_count(document_data)
 
     if st.button("Process Document"):
         text = download_text(document_id, num_pages, api_key)
