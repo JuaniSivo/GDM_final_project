@@ -56,7 +56,7 @@ def convert_csv_to_json_and_xml(csv_files):
     
     for csv_file, content in csv_files.items():
         df = pd.read_csv(io.StringIO(content))
-        json_data[csv_file.replace('.csv', '')] = df.to_json(orient='records', lines=True)
+        json_data[csv_file.replace('.csv', '')] = df.to_json(orient='records', lines=True, force_ascii=False)
 
         root = ET.Element("root")
         for _, row in df.iterrows():
